@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+        xmlns:rim="http://www.blackberry.com/ns/widgets"
+        version="1.0.0.0" id="g3a3HelloLaurier">  
+    <name>g3a3Hello Laurier</name>
+    <author>Megan Budway, Alena Miazga, Ronnie Mo</author>
+    <description>Hello Laurier</description>
+    <icon src="images/icon.png"/>
+    <content src="page1.html"/>    
+</widget>

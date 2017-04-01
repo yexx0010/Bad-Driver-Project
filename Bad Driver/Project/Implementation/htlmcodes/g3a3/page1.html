@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>Hello Laurier</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="jquery.mobile-1.2.0.min.css" />
+	<script src="jquery-1.8.2.min.js"></script>
+	<script src="jquery.mobile-1.2.0.min.js"></script>
+	
+	<script>
+	$(document).ready(function(){
+    
+		$(".wlu").click(function () { 
+			$.mobile.changePage( "page2a.html", { transition: "flip"} ); 
+
+		});
+	});
+	</script>
+</head> 
+<body> 
+
+<div data-role="page" class="type-home" id="one">
+
+	<div data-role="header" data-theme="b">
+			<h1>Hello Laurier</h1>
+	</div>
+	
+	<div data-role="content">	
+			<p align="center">CP317 Project Group Information</p>
+			<p align="center">Click on the image</p>
+			<p align="center" ><img id='wlu-seal' class = "wlu" src="images/wlu.jpg"></p>
+
+			
+	</div><!-- /content -->
+	
+</div><!-- /page -->
+
+</body>
+</html>

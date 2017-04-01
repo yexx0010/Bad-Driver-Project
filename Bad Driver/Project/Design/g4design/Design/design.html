@@ -1,0 +1,404 @@
+<html>
+<style type="text/css">
+    span.actor{
+        font-variant:small-caps;
+        font-size: 18
+    }
+</style>
+<head>
+    <title>idiotdrivers.com Database Design</title>
+</head>
+<body>
+    <h1>idiotdrivers.com Database Design</h1>
+        <p>Prepared For: David Brown</p>
+        <p>CP363</p>
+        <p>Date: March 12, 2013</p>
+    <ol>
+        <h2><li>Authors</li></h2>
+            <ul>
+                <li>Megan Budway, 081031930, budw1930@mylaurier.ca</li>
+                <li>Erin Cramer, 070318680, cram8680@mylaurier.ca</li>
+                <li>Matthew Hengeveld, 090327500, heng7500@mylaurier.ca</li>
+                <li>Ronnie Mo, 100699390, moxx9390@mylaurier.ca</li>
+                <li>Yulou Ye, 104160010, yexx0010@mylaurier.ca</li>
+            </ul>
+        <h2><li>Conventions</li></h2>
+            <ol type = "a">
+            <h3><li>Naming</li></h3>
+                Table names and views are all lowercase, and start with a letter. Words are separated using an underscore.
+                <ul>
+                    <li>Ex. story, story_tag</li>
+                </ul>
+                Attributes are all lowercase, and start with a letter. Words are separated using an underscore.<br>
+                <ul>
+                    <li>Ex. comment, story_id</li>
+                </ul>
+                Operations are all lowercase, and start with a letter. Words are separated using an underscore. All operations end with a pair of parenthesis.<br>
+                <ul>
+                    <li>Ex. add_story(), edit_story()</li>
+                </ul>
+
+            <h3><li>Typography</li></h3>
+
+                Table names and views are printed in bold.<br>
+                <ul>
+                    <li>Ex. <strong>story_tag</strong></li>
+                </ul>
+                Actors are printed in <span class="actor">small capital letters</span>.<br>
+                <ul>
+                    <li>Ex. <span class="actor">user</span></li>
+                </ul>
+                Data types are printed in italics.<br>
+                <ul>
+                    <li>Ex. <em>string</em><br></li>
+                </ul>
+
+            </ol>
+        <h2><li>Introduction</li></h2>
+            <p> The idiotdrivers.com database features member submitted stories of bad drivers, detailing location, make and model of car, and a description of the incident. This document outlines the design characteristics of the idiotdrivers.com database. Building from the analysis, and shown using UML diagrams are the structure of data tables, field types, constraints, and links. In addition, the high level flow of web pages is documented in an easy to read format. The website is viewable by the general public, and is moderated and maintained by privileged users. The following details our design using UML diagrams, and understandable descriptions. The reader will also find changes since the analysis phase, and a data dictionary which acts as a high level summary of all attributes and operations within the database.</p>
+
+        <h2><li>Documented Changes</li></h2>
+        <ul>
+            <li>Attribute names are no longer bolded.</li>
+            <li>Table names have been added and are bolded.</li>
+            <li>A <span class="actor">public user</span> actor has been identified and added since the analysis. This user type may perform searches and view stories only.</li>
+            <li>The attribute called date_time which belonged to the <strong>story</strong> table from the analysis has been modified to be story_date. This date is when the story took place.</li>
+            <li>An attribute called posted_date has been added to the <strong>story</strong> table which is a database generated date and signifies when the story was added.</li>
+            <li>The data dictionary now has a column called "Table" which identifies the table a particular attribute or operation belongs to.</li>
+            <li>The data dictionary was previously separated into two tables (one for operations and one for attributes). These have now been combined into one table.</li>
+            <li>The search() operation stated in the analysis has now been divided into several other operations. These include: </li>
+            <ul>
+                <li>select_story_all()</li>
+                <li>select_story_by_location()</li>
+                <li>select_story_by_make_and_colour()</li>
+                <li>select_story_by_tag()</li>
+            </ul>
+            <li>In addition to the procedures in the above point, several other operations have been added. These include:</li>
+            <ul>
+                <li>select_all_colours()</li>
+                <li>select_all_comments()</li>
+                <li>select_all_makes()</li>
+                <li>select_all_tags()</li>
+                <li>select_story_details()</li>
+            </ul>
+        </ul>
+
+        <h2><li>Database Structure</li></h2>
+            <p>Below is the UML diagram of the idiotdrivers.com database. In the <strong>story</strong> table, details about all stories will be stored. The <strong>make</strong>, <strong>colour</strong> and <strong>tag</strong> tables all only contain two attributes: an id and a description. The reason for these tables is to force values upon the users ie. not allow them free range of entering data. Forcing values allows for more accurate search results since now spelling mistakes are not an issue. For example, if the colour field in the interface was a free-for-all text field, a user could enter "ornge" instead of "orange" and therefore wouldn't show up in the search results for orange cavaliers, say. It is also worth while to note that although the id's and descriptions for these tables cannot be null, they can be null within the <strong>story</strong> table itself. It is very possible that the author of story does not remember what make the car was (though we certainly hope they will at least remember the colour and location they were).</p>
+            <p>The <strong>story_tag</strong> table is a look up table that allows stories to have multiple tags while also allowing these tags to be used on multiple stories.</p>
+            <p>The <strong>comments</strong> table obviously stores the comments associated with any story. The association between the <strong>story</strong> and <strong>comments</strong> database allows for the same user to comment on all stories as many times as they please.</p>
+            <p>Lastly, the <strong>user</strong> table stores the information about all accounts signed up on idiotdrivers.com. A <strong>rights</strong> table is linked to the <strong>user</strong> table and its only purpose in life is to control the types of permissions an account can have. As stated in the analysis, idiotdrivers.com only has two permission levels <span class="actor">users</span> and <span class="actor">administrators</span> (that is to say, they are the only actors with accounts). In the future though, if another permissions level did need to added, doing so is trivial.</p>
+            <p>In addition to the main tables, we have one view called <strong>v_story</strong>. This view returns the make_name, colour_name, location and story_title of all stories in the database. It is used, as discussed in the web structure section, to display all stories on the main screen on the website.</p>
+            <figure>
+                <img src="Database.svg" border="5">
+                <figcaption><br>UML Diagram of idiotdrivers.com Database</figcaption>
+            </figure>
+
+
+        <h2><li>Web Structure</li></h2>
+            <p>Below is a UML diagram of how our website is layed out. Upon any actor entering the website, they are directed to a page that shows all stories ordered from most recently posted to the website to least recently posted. The stories are shown as a link with the following information displayed from the <strong>v_story</strong> view: title, followed by "(make_name, colour_name, location)". For example, "WORST DRIVER EVER (Chevrolet, Orange, Waterloo)". To see the details of the story, the actor must click on the link. The page that is shown upon clicking has all of the attributes listed in the <strong>story</strong> table shown above and all associated comments with the story. On the stories detail page, if a person has logged in as a <span class="actor">user</span> and is the owner of the story, a link is available for them to edit the story. In the editing area, the owner can alter all user entered attributes. When the owner has completed the editng, they are directed back to the non-editable Story Details page. If the person is not the owner, all the person can see is the story details. </p>
+            <p>In order to login, the <span class="actor">user</span> will access a link on the main Stories page. They must enter their email_address and password in order to login successfully. Once they have done so, they are redirected back to the Stories page. This Login page also has a link for new users to register themselves. On the Registration page, a person shall enter an email_address and password and submit it. The person is now a <span class="actor">user</span> and is redirected back to the Stories page.</p>
+            <p>In order to create a new story for the website, the author must be a <span class="actor">user</span> and therefore logged in. If they are not logged in, there is no access to the link to get to the New Story page. In the New Story page, a <span class="actor">user</span> can fill out the form with the details of their story, and submit it. After their story has been submitted, the <span class="actor">user</span> is redirected to the Stories page.</p>
+            <p>For a <span class="actor">user</span> to comment on a story, the <span class="actor">user</span> must be logged in. If a <span class="actor">user</span> is logged in, the <span class="actor">user</span> has the ability to enter a comment in a textbox, and post it to the story. If the person is instead a <span class="actor">public user</span>, they can read others' comments but cannot submit their own.</p>
+            <p>The main Stories page also has several links used for searching. Any actor may choose the links to Search By Tag, Search By Location, or Search By Make and Colour. After submitting the search criteria, a results page shows ordered again from most recently posted, to least recently posted.</p>
+            <p><span class="actor">Adminstrators</span> have two additional options they may employ on the web interface. First, from any Story Detail page, they have access to a button that will allow them to delete the story from the website. Additionally, on the Story Detail page, they have the option to delete (by use of a button) any comments that are deemed inappropriate.</p>
+            <figure>
+                <img src="Web.svg" border="5">
+                <figcaption><br>Web UML Diagram of the idiotdrivers.com Interface</figcaption>
+            </figure>
+
+        <h2><li>Data Dictionary</li></h2>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th colspan="5">Data Dictionary</th>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <th>Table</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Constraints (if any)</th>
+            </tr>
+            <tr>
+                <td>account_id</td>
+                <td><strong>user</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifer used for <span class="actor">user</span> account access.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+			<tr>
+				<td>add_comment()</td>
+                <td><strong>comments</strong></td>
+				<td><em>procedure</em></td>
+                <td>Adds a comment against a story already stored in the database.</td>
+                <td>Must be a registered <span class="actor">user</span> to post a comment on a story.</td>
+			</tr>
+			<tr>
+                <td>add_story()</td>
+                <td><strong>story</strong></td>
+				<td><em>procedure</em></td>
+                <td>Adds a story to the database.</td>
+                <td>Must be a registered <span class="actor">user</span> to post a story.</td>
+            </tr>
+            <tr>
+                <td>colour_id</td>
+                <td><strong>colour</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier used for colour_name.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>colour_name</td>
+                <td><strong>colour</strong></td>
+                <td><em>string</em></td>
+                <td>Colour of vehicle that can be used in a story.</td>
+                <td>Unique value in the Colour table and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>comment_id</td>
+                <td><strong>comments</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier used for comment_text.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>comment_text</td>
+                <td><strong>comments</strong></td>
+                <td><em>string</em></td>
+                <td>A <span class="actor">user</span>'s comment on a story.</td>
+                <td>Cannot be null.</td>
+            </tr>
+
+			<tr>
+                <td>delete_comment()</td>
+                <td><strong>comments</strong></td>
+				<td><em>procedure</em></td>
+                <td>Deletes a comment currently in the database.</td>
+                <td>Only an <span class="actor">administrator</span> can delete comments from a story.</td>
+            </tr>
+			<tr>
+                <td>delete_story()</td>
+                <td><strong>story</strong></td>
+				<td><em>procedure</em></td>
+                <td>Deletes a story currently in the database.</td>
+                <td>Only an <span class="actor">administrator</span> can delete a story.</td>
+            </tr>
+            <tr>
+                <td>email_address</td>
+                <td><strong>user</strong></td>
+                <td><em>string</em></td>
+                <td>The e-mail address of a <span class="actor">user</span>.</td>
+                <td>Cannot be null and must have '@' in the string.</td>
+            </tr>
+			<tr>
+                <td>get_user()</td>
+                <td><strong>user</strong></td>
+				<td><em>procedure</em></td>
+                <td>Returns <span class="actor">user</span> information used for login.</td>
+                <td>No restrictions.</td>
+            </tr>
+            <tr>
+                <td>location</td>
+                <td><strong>story</strong></td>
+                <td><em>string</em></td>
+                <td>The place at which a story occured.</td>
+                <td>No restrictions.</td>
+            </tr>
+            <tr>
+                <td>make_id</td>
+                <td><strong>make</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier used for make_name.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>make_name</td>
+                <td><strong>make</strong></td>
+                <td><em>string</em></td>
+                <td>The make of the vehicle that can be used in a story.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td><strong>user</strong></td>
+                <td><em>string</em></td>
+                <td>Used by a <span class="actor">user</span> for login. </td>
+                <td>Cannot be null.</td>
+            </tr>
+            <tr>
+                <td>plate</td>
+                <td><strong>story</strong></td>
+                <td><em>string</em></td>
+                <td>The license plate of the vehicle involved in a story.</td>
+                <td>No restrictions.</td>
+            </tr>
+			<tr>
+                <td>posted_date</td>
+                <td><strong>story</strong></td>
+                <td><em>date/time</em></td>
+                <td>The date and time that the story was posted.</td>
+                <td>Cannot be null.</td>
+            </tr>
+			<tr>
+                <td>register_user()</td>
+                <td><strong>user</strong></td>
+				<td><em>procedure</em></td>
+                <td>Adds a new user to the database.</td>
+                <td>No restrictions.</td>
+            </tr>
+            <tr>
+                <td>rights_id</td>
+                <td><strong>rights</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier used for rights_desc.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>rights_desc</td>
+                <td><strong>rights</strong></td>
+                <td><em>string</em></td>
+                <td>Description of permission level for an account.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+
+            <tr>
+                <td>select_all_colours()</td>
+                <td><strong>tag</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all colour_names from the <strong>colour</strong> table.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_all_comments()</td>
+                <td><strong>comments</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all comments from the <strong>comment</strong> table.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+
+            <tr>
+                <td>select_all_makes()</td>
+                <td><strong>make</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all make_names from the <strong>make</strong> table.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_all_tags()</td>
+                <td><strong>tag</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all tag_names from the <strong>tag</strong> table.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_story_all()</td>
+                <td><strong>v_story</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all results from the <strong>v_story</strong> view.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_story_details()</td>
+                <td><strong>story</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all attributes from the <strong>story</strong> table.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_story_by_location()</td>
+                <td><strong>story</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all stories from the <strong>story</strong> table that meet the location specified by the searcher.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_story_by_make_and_colour()</td>
+                <td><strong>story</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all stories from the <strong>story</strong> table that meet the make_name and colour_name specified by the searcher.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+            <tr>
+                <td>select_story_by_tag()</td>
+                <td><strong>story</strong></td>
+                <td><em>procedure</em></td>
+                <td>Returns all stories from the <strong>story</strong> table that meet the tag_name specified by the searcher.</td>
+                <td>No restrictions.</td>
+            </tr>
+
+			<tr>
+                <td>story_date</td>
+                <td><strong>story</strong></td>
+                <td><em>date/time</em></td>
+                <td>The date and time that the story occured.</td>
+                <td>Must be a valid date.</td>
+            </tr>
+            <tr>
+                <td>story_id</td>
+                <td><strong>story</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier used for a story.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>story_text</td>
+                <td><strong>story</strong></td>
+                <td><em>string</em></td>
+                <td>The content of a <span class="actor">user</span>'s story.</td>
+                <td>Cannot be null.</td>
+            </tr>
+            <tr>
+                <td>story_title</td>
+                <td><strong>story</strong></td>
+                <td><em>string</em></td>
+                <td>The title of a story.</td>
+                <td>Cannot be null.</td>
+            </tr>
+            <tr>
+                <td>tag_id</td>
+                <td><strong>tag</strong></td>
+                <td><em>integer</em></td>
+                <td>Identifier for a tag_name.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+            <tr>
+                <td>tag_name</td>
+                <td><strong>tag</strong></td>
+                <td><em>string</em></td>
+                <td>Description of a tag.</td>
+                <td>Must be unique and cannot be null.</td>
+            </tr>
+			<tr>
+                <td>update_story()</td>
+                <td><strong>story</strong></td>
+				<td><em>procedure</em></td>
+                <td>Updates a story currently in the database.</td>
+                <td>Only the <span class="actor">user</span> who owns the story may alter it.</td>
+            </tr>
+        </table>
+        <br>
+
+        <h2><li>References</li></h2>
+        <a href="http://bohr.wlu.ca/cp363/project/project_design.php">CP363 Project Design Description</a><br><br>
+        <a href="http://bohr.wlu.ca/cp363/samples.php">CPC363 Project Samples (used for layouts only).</a>
+        <P>Other than the above, we honestly did not use any other references.</P>
+    </ol>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
